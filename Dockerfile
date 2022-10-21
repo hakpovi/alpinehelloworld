@@ -13,7 +13,7 @@ ADD ./webapp /opt/webapp/
 WORKDIR /opt/webapp
 
 # Expose is NOT supported by Heroku
-# EXPOSE 5000 		
+# EXPOSE the port 5000 		
 
 # Run the image as a non-root user
 RUN adduser -D myuser
