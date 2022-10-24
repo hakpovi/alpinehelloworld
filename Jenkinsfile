@@ -2,8 +2,8 @@ pipeline {
      environment {
        IMAGE_NAME = "alpinehelloworld"
        IMAGE_TAG = "latest"
-       STAGING = "eazytraining2020-staging"
-       PRODUCTION = "eazytraining2020-production"
+       STAGING = "hakpovi-staging"
+       PRODUCTION = "hakpovi-production"
      }
      agent none
      stages {
@@ -31,7 +31,7 @@ pipeline {
            steps {
               script {
                 sh '''
-                    curl http://172.17.0.1 | grep -q "Hello world!"
+                    curl http://localhost | grep -q "Hello world!"
                 '''
               }
            }
@@ -51,7 +51,7 @@ pipeline {
        when {
               expression { GIT_BRANCH == 'origin/master' }
             }
-      agent  any
+      agent any
       environment {
           HEROKU_API_KEY = credentials('heroku_api_key')
       }  
@@ -70,7 +70,7 @@ pipeline {
        when {
               expression { GIT_BRANCH == 'origin/master' }
             }
-      agent  any
+      agent any
       environment {
           HEROKU_API_KEY = credentials('heroku_api_key')
       }  
@@ -86,17 +86,12 @@ pipeline {
         }
      }
   }
-
-post {
-     
-     
-     success {
-          slacksend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [$env.BUILD_NUMBER}]' ($env.BUILD_URL})")
-             }
-     failure {
-          slacksend (color: '#00FF00', message: "FAILED: Job '${env.JOB_NAME} [$env.BUILD_NUMBER}]' ($env.BUILD_URL})")
-             }
-     }
+  post {
+       success {
+         slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+         }
+      failure {
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+          }   
+    }
 }
-          
-     
